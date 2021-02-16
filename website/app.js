@@ -1,6 +1,6 @@
 // Personal API Key for OpenWeatherMap API
 
-const key = '&appid=0617c705bde8584f065...';
+const key = '&appid=0617c705bde8584f0654c...';
 const baseURL = `https://api.openweathermap.org/data/2.5/weather?zip=`;
 const countryCode = `,us`;
 const units = `&units=imperial`;
@@ -12,7 +12,7 @@ document.getElementById('generate').addEventListener('click', performAction);
 function performAction(e){
     const zipCode = document.getElementById('zip').value;
     const url = baseURL +  zipCode + countryCode + key + units;
-    getWeather(url);
+    getWeather(url).then(postData());
 }
 
 
@@ -20,14 +20,14 @@ function performAction(e){
 const getWeather = async (url) =>{
     const response = await fetch (url);
     try {
-        const data = await response.json();
-        console.log(data);
-        postData('http://localhost:8000/addWeather', data)
-        .then(updateUI())
-    }
-    catch (error) {
-        console.log("error", error)
-    }
+            const data = await response.json();
+            console.log(data);
+            postData('http://localhost:8000/addWeather', data).then (updateUI())
+            return data;
+        }
+        catch (error) {
+            console.log("error", error)
+        }
 };
 
 
@@ -65,6 +65,7 @@ const updateUI = async() => {
         document.getElementById('city').innerHTML = allData.city;
         document.getElementById('description').innerHTML = allData.description;
         document.getElementById('icon').innerHTML = allData.icon;
+        document.getElementById('feel').innerHTML = document.getElementById('feelings').value;
 
     }
     catch (error) {
